@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Escolha um assunto e veja o conteúdo diretamente na tela." />
+    <meta name="keywords" content="tópicos, conteúdo, impressão direta, html" />
+    <meta name="author" content="Seu Nome" />
+    <meta name="robots" content="index, follow" />
+    <title>Escolha um Tópico</title>
+
+    <!-- Estilos CSS Internos -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f4f8; /* cor mais clara */
+            color: #222; /* texto mais escuro para melhor leitura */
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: #9c27b0; /* roxo mais vibrante */
+            color: white;
+            padding: 1rem 0;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2rem;
+        }
+
+        section {
+            padding: 20px;
+        }
+
+        .form-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+            padding: 2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-container label {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            display: block;
+            color: #5e2a7e; /* roxo escuro para labels */
+        }
+
+        .form-container select,
+        .form-container button {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #4a148c; /* roxo escuro */
+        }
+
+        .form-container button {
+            background-color: #7b1fa2; /* roxo forte */
+            color: white;
+            cursor: pointer;
+            font-size: 1.1rem;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .form-container button:hover {
+            background-color: #4a148c; /* roxo escuro */
+        }
+
+        .result-container {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #ede7f6; /* lilás clarinho */
+            border: 1px solid #7b1fa2;
+            border-radius: 5px;
+            text-align: left;
+            display: none;
+        }
+
+        .print-button {
+            margin-top: 15px;
+            padding: 10px 20px;
+            background-color: #1976d2; /* azul */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .print-button:hover {
+            background-color: #004ba0; /* azul escuro */
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: white;
+            color: #4a148c;
+            margin-top: 40px;
+            font-weight: 600;
+        }
+
+        footer a {
+            color: #9c27b0;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        footer a:hover {
+            color: #4a148c;
+        }
+
+        /* Estilo para notícias */
+        .noticias {
+            margin-top: 20px;
+        }
+
+        .noticia-item {
+            background: white;
+            border: 1px solid #ccc;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .noticia-item h5 {
+            margin-bottom: 6px;
+            color: #7b1fa2;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Escolha um Tópico</h1>
+    </header>
+
+    <section>
+        <div class="form-container">
+            <h2>Escolha um Tópico de Interesse:</h2>
+            <form id="form" onsubmit="mostrarConteudo(event)">
+                <label for="topic">Selecione um Tópico:</label>
+                <select name="topic" id="topic" required>
+                    <option value="">Selecione...</option>
+                    <option value="airbnb">COMEÇAR NO AIRBNB</option>
+                    <option value="encurtador">GANHE DINHEIRO COM ENCURTADOR DE LINK</option>
+                    <option value="vps">VPS E HOSPEDAGENS DE CONFIANÇA</option>
+                </select>
+
+                <button type="submit">Mostrar Conteúdo</button>
+            </form>
+
+            <!-- Conteúdo exibido dinamicamente -->
+            <div id="result-container" class="result-container">
+                <h3>Conteúdo Relacionado ao Tópico:</h3>
+                <div id="result"></div>
+                
+                <h4>Notícias Recentes:</h4>
+                <div id="noticias" class="noticias"></div>
+                
+                <button class="print-button" onclick="window.print()">Imprimir Conteúdo</button>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p><a href="https://shrtlk.biz/85XzH" target="_blank" rel="noopener noreferrer">Política de Privacidade</a> | <a href="https://shrtlk.biz/85XzH" target="_blank" rel="noopener noreferrer">Termos de Serviço</a></p>
+    </footer>
+
+    <script>
+        // Array de notícias por tópico
+        const noticiasData = {
+            airbnb: [
+                { title: "Airbnb registra crescimento de 30% no Brasil em 2025", link: "https://example.com/noticia1" },
+                { title: "5 dicas para melhorar suas avaliações no Airbnb", link: "https://example.com/noticia2" },
+                { title: "Regulamentação de aluguel por temporada em grandes cidades", link: "https://example.com/noticia3" }
+            ],
+            encurtador: [
+                { title: "Encurtadores de link pagam até R$ 200 por mil cliques", link: "https://example.com/noticia4" },
+                { title: "Como aumentar seus ganhos com plataformas de links", link: "https://example.com/noticia5" },
+                { title: "Cuidados para evitar bloqueio em redes sociais ao usar encurtadores", link: "https://example.com/noticia6" }
+            ],
+            vps: [
+                { title: "Novas tecnologias que revolucionam servidores VPS", link: "https://example.com/noticia7" },
+                { title: "Como escolher a melhor hospedagem VPS para seu site", link: "https://example.com/noticia8" },
+                { title: "Segurança em servidores VPS: dicas para proteger seu site", link: "https://example.com/noticia9" }
+            ]
+        };
+
+        function mostrarConteudo(event) {
+            event.preventDefault();
+
+            const topic = document.getElementById("topic").value;
+            let conteudo = '';
+
+            switch(topic) {
+                case "vps":
+                    conteudo=`
+                    <h4>Precisa de uma hospedagem de sites para o seu sistema ou VPS robusto?</h4>
+                    <p>Nós temos a solução ideal para você. Oferecemos hospedagens confiáveis e servidores VPS de alto desempenho para sites, sistemas, lojas virtuais e mais.</p>
+                    <ul>
+                        <li>Servidores com alta disponibilidade</li>
+                        <li>Suporte técnico 24/7</li>
+                        <li>Painel de controle fácil de usar (cPanel, Plesk, etc.)</li>
+                        <li>Planos escaláveis conforme seu crescimento</li>
+                        <li>Instalação rápida e gratuita</li>
+                    </ul>
+                    <p>Entre em contato conosco para conhecer os planos disponíveis e migrar seu sistema com segurança.</p>
+                    <p><a href="https://victorxx.github.io/vpsvendagihubrandom01/" target="_blank" rel="noopener noreferrer">COMECE HOJE MESMO</a></p>
+                    <p><a href="https://hostinger.com.br/?REFERRALCODE=1VICTOR444" target="_blank" rel="noopener noreferrer">TEMOS ESSA OPÇÃO TAMBÉM</a></p>
+                    `;
+                    break;
+                case 'airbnb':
+                    conteudo = `
+                        <h4>Como Começar no Airbnb</h4>
+                        <p>Você pode se tornar um anfitrião e começar a ganhar dinheiro alugando seu espaço. Cadastre-se no site oficial do Airbnb e siga os passos para criar seu anúncio.</p>
+                        <ul>
+                            <li>Crie uma conta no Airbnb</li>
+                            <li>Cadastre seu imóvel</li>
+                            <li>Defina preços e regras</li>
+                            <li>Comece a receber hóspedes</li>
+                        </ul>
+                        <p><a href="https://www.airbnb.com.br/r/saibvictore?s=6&t=061n0g" target="_blank" rel="noopener noreferrer">COMECE HOJE MESMO</a></p>
+                    `;
+                    break;
+
+                case 'encurtador':
+                    conteudo = `
+                        <h4>Ganhe Dinheiro com Encurtador de Links</h4>
+                        <p>Use plataformas como Adf.ly, Shorte.st ou Linkvertise para encurtar seus links e ganhar por cada clique. Divulgue em redes sociais, fóruns ou sites com alto tráfego.</p>
+                        <ul>
+                            <li>Cadastre-se em um serviço de encurtador</li>
+                            <li>Encurte seus links</li>
+                            <li>Compartilhe os links</li>
+                            <li>Ganhe dinheiro por visualização</li>
+                        </ul>
+                        <p>Quer saber mais? Envie uma mensagem para WhatsApp (027) 99986-0405 ou <a href="https://encurta.net/ref/113084217886494396012" target="_blank" rel="noopener noreferrer">COMECE HOJE MESMO</a></p>
+                    `;
+                    break;
+
+                default:
+                    conteudo = '<p>Selecione um tópico válido.</p>';
+            }
+
+            document.getElementById("result").innerHTML = conteudo;
+
+            // Exibir notícias
+            const noticias = noticiasData[topic] || [];
+            const noticiasDiv = document.getElementById("noticias");
+            if (noticias.length > 0) {
+                noticiasDiv.innerHTML = noticias.map(noticia => 
+                    `<div class="noticia-item">
+                        <h5>${noticia.title}</h5>
+                        <a href="${noticia.link}" target="_blank" rel="noopener noreferrer">Leia mais</a>
+                    </div>`).join('');
+            } else {
+                noticiasDiv.innerHTML = '<p>Sem notícias disponíveis para este tópico.</p>';
+            }
+
+            document.getElementById("result-container").style.display = "block";
+            // Scroll para resultado
+            document.getElementById("result-container").scrollIntoView({behavior: 'smooth'});
+        }
+
+        // Centralizar tela ao carregar
+        window.onload = () => {
+            const scrollX = (document.body.scrollWidth - window.innerWidth) / 2;
+            const scrollY = (document.body.scrollHeight - window.innerHeight) / 2;
+            window.scrollTo(scrollX, scrollY);
+        };
+    </script>
+
+</body>
+</html>
